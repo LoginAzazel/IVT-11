@@ -58,6 +58,7 @@ void WallPainter(char ****, int****, int, int, int, int, int, int);  // Созд
 void ExitPainter(char ****, int****, int, int);             // Генерирует выход из лабиринта
 void SellectRoom(char ****, int ****, int, int, int, int);          // В комнате находиться список всех комнат. Получая на вход номер комнаты и ее расположение,
                                                                         // печатает комнату в заданной координате
+int Win(int ****, int, int, int);
 
 /*_______________ Системные функции ____________________________*/
 
@@ -96,6 +97,8 @@ int main()
     free(Statistics);
     if( End == 0 ) { system("sleep 2"); goto Again; }   // Если функция Gameplay вернула 0 - повторить все действия с генерацией и продолжить игру
 
+    clear();
+    printf("\t\t---- Вы нашли путь к заветной свободе ----\n\n\n\n\n\n\n\n");
     return 0;       // Успешное окончание программы
 }
 /////////////////////
@@ -184,19 +187,19 @@ void GenerationCastle(char **** MapCastle, int **** Statistics, int Move, int Co
 
 int Gameplay(char **** MapCastle, int **** Statistics)
 {
-        Loading();  // Вызов декоративной загрузки
+        //Loading();  // Вызов декоративной загрузки
         clear();    // Очистка экрана
     int Compas = rand()%4+1;    // Переменная для записи стороны выхода
     int Position = rand()%11+1; // Переменная для записи позиции выхода
-    
     int i,j,k;  //  Обьявление побочных переменных
     int Move;   //  
+    int End;
     ExitPainter(MapCastle, Statistics, Compas, Position);   // Генерация выхода из лабиринта
     Statistics[2][0][0][0] = 5; //
     Statistics[2][0][0][1] = 5; //  Установка начальной позиции игрока
     Statistics[2][0][0][2] = 3; //
     Statistics[2][0][0][3] = 5; //
-    
+
     if(Statistics[1][6][6][0] == 0) // Создаем первую, начальную комнату
     {
         ZeroRoom(MapCastle, Statistics);  
@@ -217,11 +220,12 @@ int Gameplay(char **** MapCastle, int **** Statistics)
                 break;  // Функция Геймплей перестает передает инициативу main, где проходит перегенерация лабиринта
            }
         clear();                                                    // Каждый проход требует очистку экрана от старой информациии 
+        printf("\n--%d--%d--%d--%d--\n",Statistics[2][0][0][0],Statistics[2][0][0][1],Statistics[2][0][0][2],Statistics[2][0][0][3]);
         Display(MapCastle, Statistics);                             // Вывод на экран комнты и новой позиции игрока в ней
         ActionList(MapCastle, Statistics, Compas, Position, Move);  // Вывод на экран список возможных действий игрока и, при заначении Move = 5, подсказывает примерное расположеие выхода.
         Move = Action(MapCastle, Statistics, Compas, Position);     // Выбор игроком действия персонажа
+        if( Move != 0 && 1 == Win(Statistics, Move, Compas, Position) ) return 1;
         GenerationCastle(MapCastle, Statistics, Move, Compas, Position);    // Создание новой или переход на уже сгенерированную комнату
-        //Move = 0;
     }
     return 0;
 }
@@ -230,28 +234,31 @@ int Gameplay(char **** MapCastle, int **** Statistics)
 
 int Action(char ****MapCastle, int****Statistics, int Compas, int Position)
 {
-    int i,j,k;
-    char ENTER;
-    ENTER = getchar();
+    int i,j,k;          // Побочные переменные
+    char ENTER;         // 
+    ENTER = getchar();  // Выбор пользователем действия 
 
     switch (ENTER)
     {
-    case 'w':
+    case 'w':           // При попытке проийти вверх
         if( (MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] - 1 ][ Statistics[2][0][0][3] ] == ' ') 
-                    && (0 < Statistics[2][0][0][2] - 1) )
+                    && (0 < Statistics[2][0][0][2] - 1) )   // Если следуюая клетка вверху пуста и не превышает размерность комнаты, то выполнаяеться:
         { 
-            MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';
+            MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';    
             MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] - 1 ][ Statistics[2][0][0][3] ] = 'X';
             Statistics[2][0][0][2]--;
         }
         else if( 1 == Statistics[2][0][0][2] )
         {
-            MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';
-            return 1;
+            if( MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] - 1 ][ Statistics[2][0][0][3] ] != '/' )
+            { 
+                MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';
+                return 1;
+            }
         }
     break;
 
-    case 's':
+    case 's':           // При попытке пойти вниз
         if( (MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] + 1 ][ Statistics[2][0][0][3] ] == ' ') 
                     && (Statistics[ 0 ][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ 0 ] > Statistics[2][0][0][2] + 2) )
         { 
@@ -261,13 +268,16 @@ int Action(char ****MapCastle, int****Statistics, int Compas, int Position)
         }
         else if( Statistics[ 0 ][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ 0 ] == Statistics[2][0][0][2] + 2 )
         {
-            MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';
-            return 2;
+            if( MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] + 1 ][ Statistics[2][0][0][3] ] != '/' )
+            { 
+                MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';
+                return 2;
+            }
         }
         
     break;
 
-    case 'a':
+    case 'a':           // При попытке пойти налево
        if( (MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] - 1] == ' ') 
                     && (0 < Statistics[2][0][0][3] - 1) )
         { 
@@ -277,12 +287,15 @@ int Action(char ****MapCastle, int****Statistics, int Compas, int Position)
         }
         else if( 1 == Statistics[2][0][0][3] )
         {
-            MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';
-            return 3;
+            if( MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] - 1 ] != '/' )
+            { 
+                MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';
+                return 3;
+            }
         }
     break;
 
-    case 'd':
+    case 'd':           // При попытке пойти направо
         if( (MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] + 1] == ' ') 
                     && (Statistics[ 0 ][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ 1 ] > Statistics[2][0][0][3] + 2) )
         { 
@@ -292,13 +305,16 @@ int Action(char ****MapCastle, int****Statistics, int Compas, int Position)
         }
         else if( Statistics[ 0 ][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ 1 ] == Statistics[2][0][0][3] + 2 )
         {
-            MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';
-            return 4;
+            if( MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] + 1 ] != '/' )
+            { 
+                MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';
+                return 4;
+            }
         }
     break;
 
-    case 'h':
-        return 5;
+    case 'h':           // При попытки прислушаться
+        return 5;       // Возращает значение 5, если игрок хочет прислушаться.
     break;
 
     default:
@@ -404,6 +420,14 @@ int**** Preparation_Memory_Allocation_Statistics(int ****Statistics)
             }
         }
     }
+
+    for(i=0; i < 11; i++)
+    {
+        for(k=0; k<11; k++)
+        {
+            Statistics[1][i][k][0] = 0;
+        }
+    }
     return Statistics;
 }
 
@@ -460,20 +484,20 @@ void Loading()
 
 
 
-void WallPainter(char ****MapCastle, int****Statistics, int Compas, int Position, int N, int S, int W, int E)
+void WallPainter(char ****MapCastle, int****Statistics, int Compas, int Position, int N, int S, int W, int E)   // Параметры сторон света (N,S,W,E) вводяться при генерации комнаты
 {
-    int i,k;
-    if( Statistics[2][0][0][0] == 0 && (Compas != 1 || Position != Statistics[2][0][0][1]) )
-    {
-        for(i=0; i < 12; i++)
+    int i,k;        // Побочные переменные
+    if( Statistics[2][0][0][0] == 0 && (Compas != 1 || Position != Statistics[2][0][0][1]) )    // Если комната находиться у верхнего края карты замка и омана не являеться выходом
+    {                                                                                               // То условие истинно 
+        for(i=0; i < Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][1]; i++)             // В таком случае закрашиваем Верхнюю часть комнаты.
         {
             MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ 0 ][ i ] = '/';
         }
     }
 
-    if( Statistics[2][0][0][0] == Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][0] - 1 && (Compas != 2 || Position != Statistics[2][0][0][1]))
-    {
-        for(i=0; i < 12; i++)
+    if( Statistics[2][0][0][0] == 10 && (Compas != 2 || Position != Statistics[2][0][0][1])) 
+    {   // Если комната находиться у нужнего края карты и комната не являеться выходом, то условие истино
+        for(i=0; i < Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][1]; i++)   // Закрашиваем нижный край карты
         {
             MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][0] - 1 ][ i ] = '/';
         }
@@ -481,18 +505,79 @@ void WallPainter(char ****MapCastle, int****Statistics, int Compas, int Position
 
     if( Statistics[2][0][0][1] == 0 && ( Compas != 3 || Position != Statistics[2][0][0][0] ) )
     {
-        for(i=0; i < 12; i++)
+        for(i=0; i < Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][0]; i++)
         {
             MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ i ][ 0 ] = '/';
         }
     }
 
-    if( Statistics[2][0][0][0] == Statistics[0][ Statistics[2][0][0][0] ][  Statistics[2][0][0][1] ][1] - 1 && (Compas != 1 || Position != Statistics[2][0][0][1]))
+    if( Statistics[2][0][0][1] == 10 && (Compas != 4 || Position != Statistics[2][0][0][1]) )
     {
-        for(i=0; i < 12; i++)
+        for(i=0; i < Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][0]; i++)
         {
             MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ i ][ Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][1] - 1 ] = '/';
         }
+    }
+
+    if( N == 1 && Statistics[2][0][0][0] != 0 )
+    { 
+        if( Statistics[1][ Statistics[2][0][0][0] - 1 ][ Statistics[2][0][0][1] ][0] == 3 ||
+            Statistics[1][ Statistics[2][0][0][0] - 1 ][ Statistics[2][0][0][1] ][0] == 4 ||
+            Statistics[1][ Statistics[2][0][0][0] - 1 ][ Statistics[2][0][0][1] ][0] == 7 ||
+            Statistics[1][ Statistics[2][0][0][0] - 1 ][ Statistics[2][0][0][1] ][0] == 8 )
+        {
+            for(i=0; i < Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][1]; i++)
+            {
+                MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ 0 ][ i ] = '/';
+            }
+        }
+    }
+
+    if( S == 1 && Statistics[2][0][0][0] != 10 )
+    {
+        if( Statistics[1][ Statistics[2][0][0][0] + 1 ][ Statistics[2][0][0][1] ][0] == 2 ||
+            Statistics[1][ Statistics[2][0][0][0] + 1 ][ Statistics[2][0][0][1] ][0] == 3 ||
+            Statistics[1][ Statistics[2][0][0][0] + 1 ][ Statistics[2][0][0][1] ][0] == 6 ||
+            Statistics[1][ Statistics[2][0][0][0] + 1 ][ Statistics[2][0][0][1] ][0] == 7 ||
+            Statistics[1][ Statistics[2][0][0][0] + 1 ][ Statistics[2][0][0][1] ][0] == 8 )
+        {
+            for(i=0; i < Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][1]; i++)   // Закрашиваем нижный край комнаты
+            {
+                MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][0] - 1 ][ i ] = '/';
+            }  
+        } 
+        
+    }
+
+    if( W == 1 && Statistics[2][0][0][1] != 0 )
+    {
+        if( Statistics[1][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] - 1 ][0] == 2 ||
+            Statistics[1][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] - 1 ][0] == 1 ||
+            Statistics[1][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] - 1 ][0] == 7 ||
+            Statistics[1][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] - 1 ][0] == 9 )
+            {
+                for(i=0; i < Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][0]; i++)
+                {
+                    MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ i ][ 0 ] = '/';
+                }
+            }
+        
+    }
+
+    if( E == 1 && Statistics[2][0][0][1] != 10)
+    {
+        if( Statistics[1][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] + 1 ][0] == 2 ||
+            Statistics[1][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] + 1 ][0] == 1 ||
+            Statistics[1][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] + 1 ][0] == 6 ||
+            Statistics[1][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] + 1 ][0] == 9 )
+            {
+                for(i=0; i < Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][0]; i++)
+                {
+                    MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ i ][ Statistics[0][ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][1] - 1 ] = '/';
+                }
+
+            }
+        
     }
 }
 
@@ -558,6 +643,24 @@ void ExitPainter(char ****MapCastle, int****Statistics, int Compas, int Position
     MapCastle[ Statistics[2][0][0][0] ][ Statistics[2][0][0][1] ][ Statistics[2][0][0][2] ][ Statistics[2][0][0][3] ] = ' ';    // Убираем изменения связанные 
     break;                                                                                                                         // с нашей позицией
     }
+}
+
+
+
+int Win(int ****Statistic, int Move, int Compas, int Position )
+{
+    if(  Statistic[2][0][0][0] - 1 == -1 ||
+         Statistic[2][0][0][0] + 1 == 11 ||
+         Statistic[2][0][0][1] - 1 == -1 ||
+         Statistic[2][0][0][1] + 1 == 11  )
+        if( Compas == 1 && Statistic[2][0][0][0] == 0  && Statistic[2][0][0][1] == Position ||
+            Compas == 2 && Statistic[2][0][0][0] == 10 && Statistic[2][0][0][1] == Position ||
+            Compas == 3 && Statistic[2][0][0][1] == 0  && Statistic[2][0][0][0] == Position ||
+            Compas == 4 && Statistic[2][0][0][1] == 10 && Statistic[2][0][0][0] == Position )
+         {
+             return 1;
+         }
+    return 0;
 }
 
 
@@ -1176,8 +1279,8 @@ void ThreepleRoom(char ****MapCastle, int **** Statistics, int Move, int Compas,
         {' ','|',' ',' ',' ',' ',' ',' ','|',' ','|',' '},
         {' ','|',' ','-','-','-','|',' ','|',' ','|',' '},
         {' ','|',' ',' ',' ',' ','|',' ','|',' ','|',' '},
-        {' ','+','-','-','-',' ','|',' ',' ',' ','|',' '},
-        {' ',' ',' ',' ',' ',' ','+','-','-','-','+',' '},
+        {' ','+','-','-','+',' ','|',' ',' ',' ','|',' '},
+        {' ',' ',' ',' ','|',' ','+','-','-','-','+',' '},
         {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '}
     };
     //// Занесение комнаты на поле игры
