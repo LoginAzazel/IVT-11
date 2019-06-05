@@ -30,6 +30,14 @@ int main ()
         X1 -= 0.1;
         range++;
     }
+range = 0;
+    range = 0;
+    while( Formul(C,D,X)*Formul(C,D,X1) >= 0 && range < 30)
+    {
+        X=X1;
+        X1 -= 0.1;
+        range++;
+    }
     range = 0;
 
     do
