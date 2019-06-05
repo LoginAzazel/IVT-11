@@ -10,7 +10,7 @@ int main ()
     double X1=0.01, X=0;
     int range = 0;
     printf("\n\n Программа ищет пересечение графика с осью абцис функции:\n"
-            "\n Sin(X*C) - D = 0 \n\n");
+            "\n log2(C*X) - D \n\n");
     printf ("Введите С: "); 
     scanf ("%lf", &C);
     printf ("Введите смещение по Y (D): "); 
@@ -38,6 +38,4 @@ int main ()
 double Formul( double C, double D, double X)
 {
      return log2(C*X) - D;
-     //return sin(X*C) - D;
-     //return pow(2.71, C*X) - D;
 }
