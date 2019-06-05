@@ -18,11 +18,26 @@ int main ()
     printf ("Введите точность где Х < 1 (В формате 0.01): ");
     scanf ("%lf", &Accuracy);
 
-    while( Formul(C,D,X)*Formul(C,D,X1) >= 0)
+    if( D > 1 || D < - 1) 
+    { 
+        printf ("Нет точек пересечения\n"); 
+        return 0;
+    }
+    
+    while( Formul(C,D,X)*Formul(C,D,X1) >= 0 && range < 30)
     {
         X=X1;
         X1 += 0.5;
+        range++;
     }
+    range = 0;
+    while( Formul(C,D,X)*Formul(C,D,X1) >= 0 && range < 30)
+    {
+        X=X1;
+        X1 -= 0.5;
+        range++;
+    }
+range = 0;
     printf("\n-------------\n");
     do
     {
