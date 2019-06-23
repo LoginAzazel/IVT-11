@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void RandomFill1D(int, double []);
+void SlipperySR(int, double [], double []);
+void Display1D(int, double []);
+
+int main()
+{
+    srand(time(NULL));
+    int Num;
+
+    printf("\nВведите количество элементов массива: ");
+    scanf("%d", &Num);
+
+    double First_Array[Num], Fin_Array[Num];
+
+    RandomFill1D(Num, First_Array);
+    SlipperySR(Num, First_Array, Fin_Array);
+    Display1D(Num, First_Array);
+    Display1D(Num, Fin_Array);
+    
+    return 0;
+}
+
+void Display1D(int Num ,double Array[Num])
+{
+    int i;
+    for(i=0; i<Num; i++)
+    {
+        printf(" %.2lf\t", Array[i]);
+    }
+    printf("\n");
+}
+
+void RandomFill1D(int Num ,double Array[Num])
+{
+    int i;
+    for(i=0; i<Num; i++)
+    {
+        Array[i] = ( ( rand()%10000 ) * 0.01)+1;
+    }
+}
+
+void SlipperySR(int Num ,double Array_1[Num], double Array_2[Num])
+{
+    int i;
+    double Sum = 0;
+    for(i=0; i<Num; i++)
+    {
+        Sum += Array_1[i];
+        Array_2[i] = (Sum)/(i+1);
+    }
+}
