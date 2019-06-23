@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void Display2D(int, int [][5]);
+void Function_Add(int, int [][5], int []);
+
+int main()
+{
+    int A[5][5], B[5] = {5,6,9,0,2};
+    int i,j;
+
+    printf("\n\n Заполните двумерный массив (5*5):\n");
+    for(i=0; i<5; i++)
+    {
+        for(j=0; j<5; j++)
+        {
+            printf("A[%d][%d] = ", i,j);
+            scanf("%d",&A[i][j]);
+        }
+    }
+
+    Display2D(5, A);
+    Function_Add(5, A, B);
+    Display2D(5, A);
+
+    return 0;
+}
+
+void Display2D(int Num ,int Array[Num][Num])
+{
+    int i,j;
+    for(j = 0; j<Num; j++)
+    { 
+        for(i=0; i<Num; i++)
+        {
+            printf(" %d\t", Array[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void Function_Add(int Num, int A[Num][Num], int B[Num])
+{
+    int j,i, Line;
+    printf("\n Введите строчку, что желаете заменить: \n");
+    scanf("%d", &Line);
+
+    for(j = 0; j<Num; j++)
+    { 
+        A[j][Line] = B[j];
+    }
+}
