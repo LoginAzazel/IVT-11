@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void Display2D( int, int, int [][5] );
+void Function( int, int , int [][5] );
+void RandomFill2D( int, int, int [][5] );
+
+int main()
+{
+    int A[2][5], B[3][5];
+    int i,j;
+
+    printf("\n\n Заполните двумерный массив (2*4):\n");
+    for(i=0; i<2; i++)
+    {
+        for(j=0; j<4; j++)
+        {
+            printf("Array[%d][%d] = ", i,j);
+            scanf("%d",&A[i][j]);
+        }
+    }
+    RandomFill2D(3, 5, B);
+
+    Display2D(2, 4, A);
+    Display2D(3, 5, B);
+
+    Function(2, 4, A);
+    Function(3, 5, B);
+
+    printf("\nОтсортированные массивы:\n");
+    Display2D(2, 4, A);
+    Display2D(3, 5, B);
+
+    return 0;
+}
+
+void RandomFill2D(int Num1 ,int Num2 ,int Array[Num1][5])
+{
+    int i,j;
+    for(i=0; i<Num1; i++)
+    {
+        for(j=0; j<Num2; j++)
+        {
+            Array[i][j] = rand()%100+1;
+        }
+    }
+}
+
+void Function(int Line, int Column, int Array[Line][5])
+{
+    int i,j,k, Min = 999;
+    for(k=0; k<Column; k++)
+    {
+        for(i=0; i<Line; i++)
+        {
+            for(j=i; j<Line; j++)
+            {
+                if( Array[j][k] < Min )
+                {
+                    Min = Array[j][k];
+                    Array[j][k] = Array[i][k];
+                    Array[i][k] = Min;
+                }
+            }
+            Min = 999;
+        }
+    }
+}
+
+void Display2D(int Num , int Num2 ,int Array[Num][5])
+{
+    int i,j;
+    for(j = 0; j<Num; j++)
+    { 
+        for(i=0; i<Num2; i++)
+        {
+            printf(" %d\t", Array[j][i]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
