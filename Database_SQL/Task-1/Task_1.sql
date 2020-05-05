@@ -25,7 +25,7 @@ CREATE TABLE `Итоговая стоимость`
 (
     `№ договора` INT NOT NULL,
     `Итоговая стоимость` INT,
-    PRIMARY KEY(`№ арендатора`)
+    PRIMARY KEY(`№ договора`)
 )
 
 CREATE TABLE `Договора`
