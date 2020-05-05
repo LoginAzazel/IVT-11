@@ -1,17 +1,17 @@
-CREATE DATABASE Task_1
-USE Task_1
+CREATE DATABASE Task_1;
+USE Task_1;
 
-DROP TABLE IF EXISTS `Арендаторы`
-DROP TABLE IF EXISTS `Договора`
-DROP TABLE IF EXISTS `Итоговая стоимость`
-DROP TABLE IF EXISTS `Помещенияы`
+DROP TABLE IF EXISTS `Арендаторы`;
+DROP TABLE IF EXISTS `Договора`;
+DROP TABLE IF EXISTS `Итоговая стоимость`;
+DROP TABLE IF EXISTS `Помещенияы`;
 
 CREATE TABLE `Арендаторы`
 (
 	`№ арендатора` INT NOT NULL,
 	`Название арендатора` VARCHAR(99),
     PRIMARY KEY(`№ арендатора`)
-)
+);
 
 CREATE TABLE `Помещения`
 (
@@ -19,14 +19,14 @@ CREATE TABLE `Помещения`
     `Площадь, м^2`  SMALLINT NOT NULL,
     `Стоимость аренды в месяц` INT,
     PRIMARY KEY(`№ помещения`)
-)
+);
 
 CREATE TABLE `Итоговая стоимость`
 (
     `№ договора` INT NOT NULL,
     `Итоговая стоимость` INT,
     PRIMARY KEY(`№ договора`)
-)
+);
 
 CREATE TABLE `Договора`
 (
@@ -44,7 +44,7 @@ CREATE TABLE `Договора`
     FOREIGN KEY(`№ помещения`)
 	REFERENCES `Помещения`(`№ помещения`)
 	ON DELETE RESTRICT ON UPDATE CASCADE
-)
+);
 
 INSERT INTO `Помещения`
     (`№ помещения`, `Площадь, м^2`, `Стоимость аренды в месяц`)
@@ -106,7 +106,7 @@ JOIN
 JOIN
 	[Итоговая стоимость] ON [Договора].[№ договора] = [Итоговая стоимость].[№ договора]
 JOIN
-	[Арендаторы] ON [Арендаторы].[№ арендатора] = [Договора].[№ арендатора]
+	[Арендаторы] ON [Арендаторы].[№ арендатора] = [Договора].[№ арендатора];
 
 
 
