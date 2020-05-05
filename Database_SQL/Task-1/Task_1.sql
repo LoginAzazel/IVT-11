@@ -4,7 +4,7 @@ USE Task_1;
 DROP TABLE IF EXISTS `Арендаторы`;
 DROP TABLE IF EXISTS `Договора`;
 DROP TABLE IF EXISTS `Итоговая стоимость`;
-DROP TABLE IF EXISTS `Помещенияы`;
+DROP TABLE IF EXISTS `Помещения`;
 
 CREATE TABLE `Арендаторы`
 (
