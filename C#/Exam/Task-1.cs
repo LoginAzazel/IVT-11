@@ -6,6 +6,7 @@ namespace KurWork1
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Линейные программы");
             double z1, z2;
             double x, y;
 
