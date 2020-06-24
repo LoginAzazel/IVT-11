@@ -6,6 +6,7 @@ namespace KurWork2
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Попадание точки в заштрихованную область");
             double x, y;
             int R;
             Console.WriteLine("Введите радиус окружности:");
