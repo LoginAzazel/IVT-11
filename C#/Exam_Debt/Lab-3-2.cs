@@ -3,7 +3,7 @@ using System;
 namespace LearningProg
 {
     class Program
-    {   // Лабораторная работа 2. Задание 2. Вариант 8
+    {   // Лабораторная работа 3. Задание 2. Вариант 8
         public static bool GrafFunction(double x, double y, double R)
         {
             if (x >= 0)
