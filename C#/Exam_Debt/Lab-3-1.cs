@@ -4,7 +4,7 @@ using System.Numerics;
 namespace LearningProg
 {
     class Program
-    {   // Лабораторная работа 2. Задание 1. Вариант 8
+    {   // Лабораторная работа 3. Задание 1. Вариант 8
         public static double GrafFunction(double x, double R)
         {
             if (x >= -10 && x < -6)
