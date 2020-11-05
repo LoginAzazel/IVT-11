@@ -5,7 +5,7 @@ namespace KurWork1
     class Program
     {
         static void Main(string[] args)
-        {
+        {   // Лабораторная работа 1. Задание 1. Вариант 8
             Console.WriteLine("Линейные программы");
             double z1, z2;
             double x, y;
